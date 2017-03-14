@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	SDLTest_CommonState* state = NULL;
 	SDL_GLContext* context = NULL;
 	SDL_DisplayMode mode;
-	//SDL_Event event;
+	SDL_Event event;
 
 	if(!init(&context, &state, argc, argv))
 	{
@@ -54,11 +54,13 @@ int main(int argc, char* argv[])
 		glViewport(0,0,state->window_w, state->window_h);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+		
 		#ifdef USING_OPENGLES
 		glOrthof(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
 		#else
 		glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
 		#endif
+		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glEnable(GL_DEPTH_TEST);
@@ -66,12 +68,68 @@ int main(int argc, char* argv[])
 		glShadeModel(GL_SMOOTH);
 	}
 	//okay, so now everything should be set up.
-	for(int i =0; i < state->num_windows; i++)
+	bool done = false;
+	while(!done)
 	{
-	    render();
-	    SDL_GL_SwapWindow(state->windows[i]);
+		while(SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+				#ifndef USING_OPENGLES
+				case SDL_WINDOWEVENT:
+					switch (event.window.event)
+					{
+						case SDL_WINDOWEVENT_RESIZED:
+							for(int i = 0; i < state->num_windows; i++)
+							{
+								if(event.window.windowID == SDL_GetWindowID(state->windows[i]))
+								{
+									int status = SDL_GL_MakeCurrent(state->windows[i], context[i]);
+									if(status)
+									{
+										//We're in serious Inception territory, here. I mean, while->while->switch->case->switch->case->for->if->if!!!
+										std::cout << "SDL_GL_MakeCurrent error: " << SDL_GetError() << std::endl;
+										break;
+									}
+									glViewport(0,0,event.window.data1, event.window.data2);
+									render();
+									SDL_GL_SwapWindow(state->windows[i]);
+									break;
+								
+								}
+							
+							}
+							break;
+							
+						default:
+							break;
+					}
+					
+				case SDL_KEYUP:
+					switch (event.key.keysym.scancode)
+					{
+						case SDL_SCANCODE_Q:
+							done = true;
+							break;
+						
+						default:
+							break;
+					}
+					break;
+					
+				default:
+					break;
+				#endif
+			}
+		
+		}
+		for(int i =0; i < state->num_windows; i++)
+		{
+		    render();
+		    SDL_GL_SwapWindow(state->windows[i]);
+		}
 	}
-	SDL_Delay(2000);
+	
 	shutdown(context, state, 0);
 	return 0;
 }
@@ -96,6 +154,10 @@ bool init(SDL_GLContext** context, SDLTest_CommonState** state, int argc, char* 
 	}
 	
 	tState->window_flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+	
+	#ifndef USING_OPENGLES
+	tState->window_flags |= SDL_WINDOW_RESIZABLE;
+	#endif
 	
 	//Having looked at the defaults, I think the rest is fine for now.
 	
