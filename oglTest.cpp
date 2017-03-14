@@ -66,8 +66,11 @@ int main(int argc, char* argv[])
 		glShadeModel(GL_SMOOTH);
 	}
 	//okay, so now everything should be set up.
-	
-	render();
+	for(int i =0; i < state->num_windows; i++)
+	{
+	    render();
+	    SDL_GL_SwapWindow(state->windows[i]);
+	}
 	SDL_Delay(2000);
 	shutdown(context, state, 0);
 	return 0;
