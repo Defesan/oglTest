@@ -58,7 +58,8 @@ int main(int argc, char* argv[])
 		#ifdef USING_OPENGLES
 		glOrthof(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
 		#else
-		glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
+		//glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
+		glOrtho(-2.0f, 2.0f, -2, 2, -2.0f, 2.0f);
 		#endif
 		
 		glMatrixMode(GL_MODELVIEW);
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
 			switch (event.type)
 			{
 				#ifndef USING_OPENGLES
+				//For now, only the desktop version handles any events. Still, I'd like to keep the option open, in case I find some I want to put on mobile, or on both.
 				case SDL_WINDOWEVENT:
 					switch (event.window.event)
 					{
@@ -123,7 +125,7 @@ int main(int argc, char* argv[])
 			}
 		
 		}
-		for(int i =0; i < state->num_windows; i++)
+		for(int i = 0; i < state->num_windows; i++)
 		{
 		    render();
 		    SDL_GL_SwapWindow(state->windows[i]);
@@ -224,6 +226,58 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 }
 void render()
 {
+	//Let's try rendering a cube
+	
+	//We need eight vertices.
+	static GLfloat verts[8][3] =
+	{
+		{0.5f, 0.5f, 0.5f},
+		{0.5f, -0.5f, 0.5f},
+		{-0.5f, 0.5f, 0.5f},
+		{-0.5f, -0.5f, 0.5f},
+		{0.5f, 0.5f, -0.5f},
+		{0.5f, -0.5f, -0.5f},
+		{-0.5f, 0.5f, -0.5f},
+		{-0.5f, -0.5f, -0.5f}
+	};
+	
+	//Varied colors, but muted. Except for 7, who's an oddball.
+	static GLubyte colors[8][4] =
+	{
+		{150, 0, 0, 255},
+		{0, 150, 0, 255},
+		{0, 0, 150, 255},
+		{150, 150, 0, 255},
+		{150, 150, 150, 255},
+		{0, 150, 150, 255},
+		{0, 0, 0, 255},
+		{255, 255, 255, 255}
+	};
+	//And there are twelve triangles. Here...things get tricky.
+	static GLubyte indices[36] =
+	{ 0, 1, 3, 
+	  0, 2, 3,
+	  0, 2, 6,
+	  0, 4, 6,
+	  1, 0, 4,
+	  1, 5, 4,
+	  6, 7, 5,
+	  6, 4, 5,
+	  3, 1, 5,
+	  3, 7, 5,
+	  2, 3, 7,
+	  2, 5, 7 };
+	//I...think?
+
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, verts);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glRotatef(0.25f, 0.25f, 0.25f, 0.25f);
 }
