@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 		state->window_h = 480;
 		#endif
 		
-		float aspectMod = 2.0f * (state->window_w / state->window_h);
+		float aspectMod = 2.0f * (state->window_h / state->window_w);
 		
 		glViewport(0,0,state->window_w, state->window_h);
 		glMatrixMode(GL_PROJECTION);
@@ -58,8 +58,7 @@ int main(int argc, char* argv[])
 		#ifdef USING_OPENGLES
 		glOrthof(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
 		#else
-		//glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
-		glOrtho(-2.0f, 2.0f, -2, 2, -2.0f, 2.0f);
+		glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
 		#endif
 		
 		glMatrixMode(GL_MODELVIEW);
@@ -266,7 +265,7 @@ void render()
 	  3, 1, 5,
 	  3, 7, 5,
 	  2, 3, 7,
-	  2, 5, 7 };
+	  2, 6, 7 };
 	//I...think?
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
