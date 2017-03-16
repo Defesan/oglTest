@@ -53,7 +53,9 @@ int main(int argc, char* argv[])
 		
 		debug << state->window_w << std::endl << state->window_h << std::endl << std::endl;
 		
-		float aspectMod = 2.0f * (state->window_h / state->window_w);
+		float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
+		
+		debug << "aspectMod: " << aspectMod << std::endl << std::endl;
 		
 		glViewport(0,0,state->window_w, state->window_h);
 		glMatrixMode(GL_PROJECTION);
