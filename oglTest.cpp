@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
 	SDL_GLContext* context = NULL;
 	SDL_DisplayMode mode;
 	SDL_Event event;
+	std::fstream debug ("debug.txt", std::fstream::app);
 
 	if(!init(&context, &state, argc, argv))
 	{
@@ -46,8 +48,10 @@ int main(int argc, char* argv[])
 		state->window_h = mode.h;
 		#else
 		state->window_w = 640;
-		state->window_h = 480;
+		state->window_h = 640;
 		#endif
+		
+		debug << state->window_w << std::endl << state->window_h << std::endl << std::endl;
 		
 		float aspectMod = 2.0f * (state->window_h / state->window_w);
 		
@@ -132,6 +136,7 @@ int main(int argc, char* argv[])
 	}
 	
 	shutdown(context, state, 0);
+	debug.close();
 	return 0;
 }
 
@@ -223,6 +228,7 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 	SDLTest_CommonQuit(state);
 	exit(val);
 }
+
 void render()
 {
 	//Let's try rendering a cube
