@@ -20,6 +20,7 @@
 
 bool init(SDL_GLContext** context, SDLTest_CommonState** state, int argc, char* argv[]);
 void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val);
+int handleEvents(SDL_Event event, SDLTest_CommonState* state, SDL_GLContext* context);
 void render();
 
 int main(int argc, char* argv[])
@@ -28,7 +29,7 @@ int main(int argc, char* argv[])
 	SDL_GLContext* context = NULL;
 	SDL_DisplayMode mode;
 	SDL_Event event;
-	std::fstream debug ("debug.txt", std::fstream::app);
+	std::fstream debug ("debug.txt", std::fstream::out);
 
 	if(!init(&context, &state, argc, argv))
 	{
@@ -47,7 +48,7 @@ int main(int argc, char* argv[])
 		state->window_w = mode.w;
 		state->window_h = mode.h;
 		#else
-		state->window_w = 640;
+		state->window_w = 480;
 		state->window_h = 640;
 		#endif
 		
@@ -79,56 +80,14 @@ int main(int argc, char* argv[])
 	{
 		while(SDL_PollEvent(&event))
 		{
-			switch (event.type)
+			switch(handleEvents(event, state, context))
 			{
-				#ifndef USING_OPENGLES
-				//For now, only the desktop version handles any events. Still, I'd like to keep the option open, in case I find some I want to put on mobile, or on both.
-				case SDL_WINDOWEVENT:
-					switch (event.window.event)
-					{
-						case SDL_WINDOWEVENT_RESIZED:
-							for(int i = 0; i < state->num_windows; i++)
-							{
-								if(event.window.windowID == SDL_GetWindowID(state->windows[i]))
-								{
-									int status = SDL_GL_MakeCurrent(state->windows[i], context[i]);
-									if(status)
-									{
-										//We're in serious Inception territory, here. I mean, while->while->switch->case->switch->case->for->if->if!!!
-										std::cout << "SDL_GL_MakeCurrent error: " << SDL_GetError() << std::endl;
-										break;
-									}
-									glViewport(0,0,event.window.data1, event.window.data2);
-									render();
-									SDL_GL_SwapWindow(state->windows[i]);
-									break;
-								
-								}
-							
-							}
-							break;
-							
-						default:
-							break;
-					}
-					
-				case SDL_KEYUP:
-					switch (event.key.keysym.scancode)
-					{
-						case SDL_SCANCODE_Q:
-							done = true;
-							break;
-						
-						default:
-							break;
-					}
+				case 1:
+					done = true;
 					break;
-					
 				default:
 					break;
-				#endif
 			}
-		
 		}
 		for(int i = 0; i < state->num_windows; i++)
 		{
@@ -288,3 +247,66 @@ void render()
 	glMatrixMode(GL_MODELVIEW);
 	glRotatef(0.25f, 0.25f, 0.25f, 0.25f);
 }
+
+
+int handleEvents(SDL_Event event, SDLTest_CommonState* state, SDL_GLContext* context)
+{
+
+	int rv = 0;
+
+	switch (event.type)
+	{
+		#ifndef USING_OPENGLES
+		//For now, only the desktop version handles any events. Still, I'd like to keep the option open, in case I find some I want to put on mobile, or on both.
+		case SDL_WINDOWEVENT:
+			switch (event.window.event)
+			{
+				case SDL_WINDOWEVENT_RESIZED:
+					for(int i = 0; i < state->num_windows; i++)
+					{
+						if(event.window.windowID == SDL_GetWindowID(state->windows[i]))
+						{
+							int status = SDL_GL_MakeCurrent(state->windows[i], context[i]);
+							if(status)
+							{
+								//We're in serious Inception territory, here. I mean, while->while->switch->case->switch->case->for->if->if!!!
+								std::cout << "SDL_GL_MakeCurrent error: " << SDL_GetError() << std::endl;
+								break;
+							}
+							glViewport(0,0,event.window.data1, event.window.data2);
+							float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
+							glMatrixMode(GL_PROJECTION);
+							glLoadIdentity();
+							glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
+							
+							render();
+							SDL_GL_SwapWindow(state->windows[i]);
+							break;
+						}
+							
+					}
+					break;
+							
+				default:
+					break;
+			}
+					
+		case SDL_KEYUP:
+			switch (event.key.keysym.scancode)
+			{
+				case SDL_SCANCODE_Q:
+					rv = 1;
+					break;
+					
+				default:
+					break;
+			}
+			break;
+				
+		default:
+			break;
+		#endif
+	}
+	return rv;
+}
+
