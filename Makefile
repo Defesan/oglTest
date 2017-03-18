@@ -1,4 +1,4 @@
-OBJS = oglTest.cpp
+OBJS = oglTest.cpp stRect.cpp
 
 OBJ_NAME = oglTest
 

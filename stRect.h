@@ -3,7 +3,7 @@
 
 #include "stShape.h"
 
-class stRect : public Shape
+class Rect : public Shape
 {
 private:
 	GLfloat originX;
@@ -13,11 +13,17 @@ private:
 	
 public:
 	Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height);
-	~Rect();
-	GLfloat** getVerts() {return this->verts;};
-	GLubyte** getColors() {return this->colors;};
-	GLushort* getIndices() {return this->indices;};
-	//No need for special functions. I mean, this is about the most basic shape...
+	//Rect(GLfloat originX, GLfloat originY, GLfloat edge);
+	~Rect() override;
+	GLfloat** getVerts() override {return this->verts;};
+	GLubyte** getColors() override {return this->colors;};
+	GLushort* getIndices() override {return this->indices;};
+	//No need for special functions. I mean, this is about the most basic shape... but I still need to override all of the base class' methods.
+	//I guess that makes sense.
+	
+	void genVerts() override;
+	void genIndices() override;
+	bool setColors(GLubyte** colors) override;
 };
 
 

@@ -7,6 +7,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_test_common.h"
+#include "stRect.h"
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 #define USING_OPENGLES
@@ -193,7 +194,7 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 void render()
 {
 	//Let's try rendering a cube
-	
+/*	
 	//We need eight vertices.
 	static GLfloat verts[8][3] =
 	{
@@ -234,7 +235,53 @@ void render()
 	  2, 3, 7,
 	  2, 6, 7 };
 	//I...think?
-
+*/
+	static int i = 0;
+	static Rect* square = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+	
+	//static GLushort* indices = square->getIndices();
+	//static GLubyte** colors = square->getColors();
+	//static GLfloat** verts = square->getVerts(); 
+	
+	
+	static GLushort indices[6];
+	static GLubyte colors[4][4];
+	static GLfloat verts[4][3]; 
+	if(!i)
+	{
+		std::cout << "Vertex coords:" << std::endl;
+		for(int i = 0; i < 4; i++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				verts[i][j] = square->getVerts()[i][j];
+				std::cout << verts[i][j] << "\t";
+			}
+			std::cout << std::endl;
+		}
+	
+		std::cout << "Indices:" << std::endl;
+		for(int i = 0; i < 6; i++)
+		{
+			indices[i] = square->getIndices()[i];
+			std::cout << indices[i] << "\t";
+		}
+		std::cout << std::endl;
+	
+	
+		std::cout << "Colors:" << std::endl;
+		for(int i = 0; i < 4; i++)
+		{
+			for(int j = 0; j < 4; j++)
+			{
+				colors[i][j] = square->getColors()[i][j];
+				std::cout << (int)colors[i][j] << "\t";
+			}
+			std::cout << std::endl;
+		}
+		i++;
+	}
+	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -242,10 +289,10 @@ void render()
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, indices);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 	
-	glMatrixMode(GL_MODELVIEW);
-	glRotatef(0.25f, 0.25f, 0.25f, 0.25f);
+	//glMatrixMode(GL_MODELVIEW);
+	//glRotatef(0.25f, 0.25f, 0.25f, 0.25f);
 }
 
 

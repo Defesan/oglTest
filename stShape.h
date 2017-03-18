@@ -2,6 +2,7 @@
 #define __ST_SHAPE_H__
 
 #include <cmath>
+#include <iostream>
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 #define USING_OPENGLES
@@ -17,7 +18,7 @@
 class Shape
 {
 	//These shapes are going to be defined in terms of vertices, triangles, and colors. So...each one has to have all three. Doesn't matter what it is.
-private:
+protected:
 	GLfloat** verts;
 	GLubyte** colors;
 	GLushort* indices;
@@ -37,12 +38,12 @@ public:
 	virtual bool setColors(GLubyte** colors) = 0;
 	
 	//We need the getters so that we can actually display the shape. Maybe make this class able to display itself in the future?
-	virtual GLfloat** getColors() = 0;
+	virtual GLubyte** getColors() = 0;
 	virtual GLfloat** getVerts() = 0;
 	virtual GLushort* getIndices() = 0;
 
 	//Finally, the destructor.
-	virtual ~Shape();
+	virtual ~Shape() {};
 };
 
 
