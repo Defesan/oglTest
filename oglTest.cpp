@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <typeinfo>
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_test_common.h"
@@ -239,16 +240,31 @@ void render()
 	static int i = 0;
 	static Rect* square = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
 	
-	//static GLushort* indices = square->getIndices();
-	//static GLubyte** colors = square->getColors();
-	//static GLfloat** verts = square->getVerts(); 
+	static GLushort* pIndices = square->getIndices();
+	static GLubyte** pColors = square->getColors();
+	static GLfloat** pVerts = square->getVerts(); 
 	
 	
 	static GLushort indices[6];
 	static GLubyte colors[4][4];
 	static GLfloat verts[4][3]; 
+	
+	//Here's what's going on. After a night sleeping on this, I've realized how stupid I was being.
+	//I thought, hey, it's the SAME ARRAY, right?
+	//Long story short, and if any experienced programmer is reading this, I am sorry I didn't see this sooner, but...
+	//No, it isn't.
+	//What I passed in was an array of pointers, which were NOT GLFloats. The VertexPointer function didn't know that.
+	//All it knew was that I'd sent it a pointer, and told it it contained a bunch of floats. The indices are fine.
+	//Verts and colors, however, aren't.
+	//Good news and bad news. Bad news, this makes the structure I have to store in my geometry classes(snort) less intuitive.
+	//But good news, it's eminiently fixable. All I have to do is change those arrays to one dimension, and I'll be fine.
+	
+
 	if(!i)
 	{
+		std::cout << "Passed vertex array type: " << typeid(pVerts).name() << std::endl;
+		std::cout << "Constructed vertex array type: " << typeid(verts).name() << std::endl;
+		
 		std::cout << "Vertex coords:" << std::endl;
 		for(int i = 0; i < 4; i++)
 		{
