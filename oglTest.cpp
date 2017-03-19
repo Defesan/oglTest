@@ -9,6 +9,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_test_common.h"
 #include "stRect.h"
+#include "stCircle.h"
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 #define USING_OPENGLES
@@ -194,109 +195,14 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 
 void render()
 {
-	//Let's try rendering a cube
-/*	
-	//We need eight vertices.
-	static GLfloat verts[8][3] =
-	{
-		{0.5f, 0.5f, 0.5f},
-		{0.5f, -0.5f, 0.5f},
-		{-0.5f, 0.5f, 0.5f},
-		{-0.5f, -0.5f, 0.5f},
-		{0.5f, 0.5f, -0.5f},
-		{0.5f, -0.5f, -0.5f},
-		{-0.5f, 0.5f, -0.5f},
-		{-0.5f, -0.5f, -0.5f}
-	};
-	
-	//Varied colors, but muted. Except for 7, who's an oddball.
-	static GLubyte colors[8][4] =
-	{
-		{150, 0, 0, 255},
-		{0, 150, 0, 255},
-		{0, 0, 150, 255},
-		{150, 150, 0, 255},
-		{150, 150, 150, 255},
-		{0, 150, 150, 255},
-		{0, 0, 0, 255},
-		{255, 255, 255, 255}
-	};
-	//And there are twelve triangles. Here...things get tricky.
-	static GLubyte indices[36] =
-	{ 0, 1, 3, 
-	  0, 2, 3,
-	  0, 2, 6,
-	  0, 4, 6,
-	  1, 0, 4,
-	  1, 5, 4,
-	  6, 7, 5,
-	  6, 4, 5,
-	  3, 1, 5,
-	  3, 7, 5,
-	  2, 3, 7,
-	  2, 6, 7 };
-	//I...think?
-*/
-	static int i = 0;
-	static Rect* square = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-	
-	static GLushort* pIndices = square->getIndices();
-	static GLubyte** pColors = square->getColors();
-	static GLfloat** pVerts = square->getVerts(); 
-	
-	
-	static GLushort indices[6];
-	static GLubyte colors[4][4];
-	static GLfloat verts[4][3]; 
-	
-	//Here's what's going on. After a night sleeping on this, I've realized how stupid I was being.
-	//I thought, hey, it's the SAME ARRAY, right?
-	//Long story short, and if any experienced programmer is reading this, I am sorry I didn't see this sooner, but...
-	//No, it isn't.
-	//What I passed in was an array of pointers, which were NOT GLFloats. The VertexPointer function didn't know that.
-	//All it knew was that I'd sent it a pointer, and told it it contained a bunch of floats. The indices are fine.
-	//Verts and colors, however, aren't.
-	//Good news and bad news. Bad news, this makes the structure I have to store in my geometry classes(snort) less intuitive.
-	//But good news, it's eminiently fixable. All I have to do is change those arrays to one dimension, and I'll be fine.
-	
 
-	if(!i)
-	{
-		std::cout << "Passed vertex array type: " << typeid(pVerts).name() << std::endl;
-		std::cout << "Constructed vertex array type: " << typeid(verts).name() << std::endl;
-		
-		std::cout << "Vertex coords:" << std::endl;
-		for(int i = 0; i < 4; i++)
-		{
-			for(int j = 0; j < 3; j++)
-			{
-				verts[i][j] = square->getVerts()[i][j];
-				std::cout << verts[i][j] << "\t";
-			}
-			std::cout << std::endl;
-		}
+	static Circle* circle = new Circle(0.0f, 0.0f, 1.0f);	
 	
-		std::cout << "Indices:" << std::endl;
-		for(int i = 0; i < 6; i++)
-		{
-			indices[i] = square->getIndices()[i];
-			std::cout << indices[i] << "\t";
-		}
-		std::cout << std::endl;
+	static GLushort* indices = circle->getIndices();
+	static GLubyte* colors = circle->getColors();
+	static GLfloat* verts = circle->getVerts(); 
 	
-	
-		std::cout << "Colors:" << std::endl;
-		for(int i = 0; i < 4; i++)
-		{
-			for(int j = 0; j < 4; j++)
-			{
-				colors[i][j] = square->getColors()[i][j];
-				std::cout << (int)colors[i][j] << "\t";
-			}
-			std::cout << std::endl;
-		}
-		i++;
-	}
+	 
 	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -305,10 +211,11 @@ void render()
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
-	
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, indices);
+
 	//glMatrixMode(GL_MODELVIEW);
-	//glRotatef(0.25f, 0.25f, 0.25f, 0.25f);
+	//glRotatef(0.25f, 0.0f, 0.0f, 0.25f);
+
 }
 
 

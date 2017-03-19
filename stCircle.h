@@ -1,20 +1,21 @@
-#ifndef __ST_RECT_H__
-#define __ST_RECT_H__
+#ifndef __ST_CIRCLE_H__
+#define __ST_CIRCLE_H__
 
 #include "stShape.h"
 
-class Rect : public Shape
+#define PI 3.1415926
+
+class Circle : public Shape
 {
 private:
 	GLfloat originX;
 	GLfloat originY;
-	GLfloat width;
-	GLfloat height;
-	
+	GLfloat radius;
 public:
-	Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height);
-	Rect(GLfloat originX, GLfloat originY, GLfloat edge) : Rect(originX, originY, edge, edge) {};
-	~Rect() override;
+
+	Circle(GLfloat originX, GLfloat originY, GLfloat radius);
+	~Circle() override;
+	
 	GLfloat* getVerts() override {return this->verts;};
 	GLubyte* getColors() override {return this->colors;};
 	GLushort* getIndices() override {return this->indices;};
@@ -23,7 +24,6 @@ public:
 	void genIndices() override;
 	bool setColors(GLubyte** colors) override;
 };
-
 
 
 #endif

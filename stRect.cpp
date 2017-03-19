@@ -3,14 +3,9 @@
 Rect::Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height)
 {
 	//We need four vertices.
-	this->verts = new GLfloat*[4];
-	this->colors = new GLubyte*[4];
+	this->verts = new GLfloat[12];
+	this->colors = new GLubyte[12];
 	
-	for(int i = 0; i < 4; i++)
-	{
-		this->verts[i] = new GLfloat[3];
-	    this->colors[i] = new GLubyte[4];
-	}
 	this->indices = new GLushort[6];
 	
 	this->originX = originX;
@@ -23,10 +18,11 @@ Rect::Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height)
 	
 	for(int i = 0; i < 4; i++)
 	{
-		this->colors[i][0] = 20 * i;
-		this->colors[i][1] = 30 * i;
-		this->colors[i][2] = 50 * i;
-		this->colors[i][3] = 255;
+		int arrOffset = i * 4;
+		this->colors[arrOffset] = 20 * i;
+		this->colors[arrOffset + 1] = 30 * i;
+		this->colors[arrOffset + 2] = 50 * i;
+		this->colors[arrOffset + 3] = 255;
 	}
 
 }
@@ -43,18 +39,18 @@ void Rect::genVerts()
 {
 	GLfloat offsetX = this->width / 2;
 	GLfloat offsetY = this->height / 2; 
-	this->verts[0][0] = this->originX - offsetX;
-	this->verts[0][1] = this->originY + offsetY;
-	this->verts[0][2] = 0.0f;
-	this->verts[1][0] = this->originX + offsetX;
-	this->verts[1][1] = this->originY + offsetY;
-	this->verts[1][2] = 0.0f;
-	this->verts[2][0] = this->originX - offsetX;
-	this->verts[2][1] = this->originY - offsetY;
-	this->verts[2][2] = 0.0f;
-	this->verts[3][0] = this->originX + offsetX;
-	this->verts[3][1] = this->originY - offsetY;
-	this->verts[3][2] = 0.0f;
+	this->verts[0] = this->originX - offsetX;
+	this->verts[1] = this->originY + offsetY;
+	this->verts[2] = 0.0f;
+	this->verts[3] = this->originX + offsetX;
+	this->verts[4] = this->originY + offsetY;
+	this->verts[5] = 0.0f;
+	this->verts[6] = this->originX - offsetX;
+	this->verts[7] = this->originY - offsetY;
+	this->verts[8] = 0.0f;
+	this->verts[9] = this->originX + offsetX;
+	this->verts[10] = this->originY - offsetY;
+	this->verts[11] = 0.0f;
 	
 	
 }
@@ -74,7 +70,14 @@ bool Rect::setColors(GLubyte** colors)
 {
 	if(colors)
 	{
-		this->colors = colors;
+		//Yes, I know. Not good code. I need to pull in both the number of vertices and the size of the color array, but for now...
+		for(int i = 0; i < 4; i++)
+		{
+			for(int j = 0; j < 4; j++)
+			{
+				this->colors[(i * 4) + j] = colors[i][j];
+			}
+		}
 		return true;
 	}
 	return false;
