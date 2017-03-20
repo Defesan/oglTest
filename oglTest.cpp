@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 		glLoadIdentity();
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
-		glShadeModel(GL_SMOOTH);
+		glShadeModel(GL_FLAT);
 	}
 	//okay, so now everything should be set up.
 	bool done = false;
@@ -196,7 +196,9 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 void render()
 {
 
-	static Circle* circle = new Circle(0.0f, 0.0f, 1.0f);	
+	int numVerts = 30;
+
+	static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
 	
 	static GLushort* indices = circle->getIndices();
 	static GLubyte* colors = circle->getColors();
@@ -211,7 +213,7 @@ void render()
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, indices);
+	glDrawElements(GL_TRIANGLES, numVerts * 3, GL_UNSIGNED_SHORT, indices);
 
 	//glMatrixMode(GL_MODELVIEW);
 	//glRotatef(0.25f, 0.0f, 0.0f, 0.25f);

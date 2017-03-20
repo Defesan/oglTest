@@ -11,9 +11,11 @@ private:
 	GLfloat originX;
 	GLfloat originY;
 	GLfloat radius;
+	GLushort numVerts;
 public:
-
-	Circle(GLfloat originX, GLfloat originY, GLfloat radius);
+	
+	Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVerts);
+	Circle(GLfloat originX, GLfloat originY, GLfloat radius) : Circle(originX, originY, radius, 12) {};
 	~Circle() override;
 	
 	GLfloat* getVerts() override {return this->verts;};
