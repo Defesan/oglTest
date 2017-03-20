@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
 		glLoadIdentity();
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
-		glShadeModel(GL_FLAT);
+		glShadeModel(GL_SMOOTH);
 	}
 	//okay, so now everything should be set up.
 	bool done = false;
@@ -196,7 +196,7 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 void render()
 {
 
-	int numVerts = 30;
+	int numVerts = 300;
 
 	static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
 	

@@ -45,40 +45,85 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	}
 	
 	
-	for(int i = 0; i < 4; i++)
+	//Basic colors.
+	//Okay, so this time, I'm going to iterate through EVERY VERTEX. The first vertex, of course, is going to be black(as the center).
+	//After that, though, I want three variables. One for red, one for green, and one for blue.
+	//THe red one should increase to 255 over the course of the first third of the circle, and stay that way.
+	//(this isn't a color wheel, btw, except in that it is a wheel with colors on it.)
+	//With red at 255, the overflow goes into green until it reaches 255.
+	//Then the overflow goes into blue until IT reaches 255.
+	//So the total I need to reach over numVertices is 765.
+	//And the alpha channel for good measure.
+	
+	GLubyte red = 0;
+	GLubyte green = 0;
+	GLubyte blue = 0;
+	GLubyte alpha = 255;
+	
+	int delta = 765 / this->numVerts;
+	
+	if(!delta)
 	{
-		this->colors[i] = 0.0f;
+		delta = 1;
+	
+	}
+	
+	for(int i = 0; i < this->numVerts; i++)
+	{
+		int pos = i * 4;
+		this->colors[pos] = red;
+		pos++;
+		this->colors[pos] = green;
+		pos++;
+		this->colors[pos] = blue;
+		pos++;
+		this->colors[pos] = alpha;
 		
-		
-		int deltaColor[3];
-		
-		if(redVerts < 254)
+		//If red hasn't been maxed out...
+		if(red < 255)
 		{
-			deltaColor[0] = 255 / redVerts;
-			deltaColor[1] = 255 / greenVerts;
-			deltaColor[2] = 255 / blueVerts;
+			//and there's room for a full delta...
+			if((255 - red) > delta)
+			{
+				//Add the full delta.
+				red += delta;
+			}
+			else	//There's still room, but not ENOUGH room
+			{
+				int overflow = delta - (255 - red);
+				red = 255;
+				green += overflow;
+			}
+		
+		}
+		else if(green < 255)
+		{
+			if((255 - green) > delta)
+			{
+				green += delta;
+			}
+			else	
+			{
+				int overflow = delta - (255 - green);
+				green = 255;
+				blue += overflow;
+			}
+		}
+		else if(blue < 255)
+		{
+			if((255 - blue) > delta)
+			{
+				blue += delta;
+			}
+			else	
+			{
+				blue = 255;
+			}
 		}
 		else
 		{
-			deltaColor[0] = 1;
-			deltaColor[1] = 1;
-			deltaColor[2] = 1;
+			std::cout << "Edge case... But this shouldn't happen. All the colors got filled up." << std::endl;
 		}
-		
-		int pos = (i + 1) * 4;
-		this->colors[pos] = (i + 1) * deltaColor[0];
-		pos = (i + (redVerts + 1)) * 4;
-		this->colors[pos + 1] = (i + 1) * deltaColor[1];
-		pos = (i + (redVerts + greenVerts + 1)) * 4;
-		this->colors[pos + 2] = (i + 2) * deltaColor[2];
-	}
-
-	//And the alpha channel for good measure.
-	for(int i = 0; i < this->numVerts; i++)
-	{
-		//I want to change the fourth member of each quad.
-		int pos = (i * 4) + 3;
-		this->colors[pos] = 255;
 	}
 
 	//Okay, I think THAT should work.
