@@ -1,4 +1,4 @@
-OBJS = oglTest.cpp stRect.cpp stCircle.cpp
+OBJS = oglTest.cpp stRect.cpp stCircle.cpp stSphere.cpp
 
 OBJ_NAME = oglTest
 

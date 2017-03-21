@@ -21,30 +21,6 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	
 	this->genIndices();
 	
-	//Color generation. Let's start with black at the center, then increase red, then green, then blue.
-	//That means we have four vertices for each color, and the increase needs to go up to, let's say, 252, for clarity's sake. So 63 for the first, 126 for the second, and so on.
-	
-	int redVerts = numVerts/3;
-	int greenVerts = redVerts;
-	int blueVerts = redVerts;
-	
-	switch(numVerts % (redVerts + greenVerts + blueVerts))
-	{
-		case 0:
-			break;
-		case 1:
-			greenVerts++;
-			break;
-		case 2:
-			redVerts++;
-			blueVerts++;
-			break;
-		default:
-			std::cerr << "Something went wrong with the math on determining the number of vertices per color..." << std::endl;
-			break;
-	}
-	
-	
 	//Basic colors.
 	//Okay, so this time, I'm going to iterate through EVERY VERTEX. The first vertex, of course, is going to be black(as the center).
 	//After that, though, I want three variables. One for red, one for green, and one for blue.
@@ -178,6 +154,7 @@ bool Circle::setColors(GLubyte** colors)
 	if(colors)
 	{
 		//Yes, I know. Not good code. I need to pull in both the number of vertices and the size of the color array, but for now...
+		//BTW, doesn't work. Not for this, at least.
 		for(int i = 0; i < 4; i++)
 		{
 			for(int j = 0; j < 4; j++)

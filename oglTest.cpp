@@ -10,6 +10,7 @@
 #include "SDL2/SDL_test_common.h"
 #include "stRect.h"
 #include "stCircle.h"
+#include "stSphere.h"
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 #define USING_OPENGLES
@@ -198,11 +199,11 @@ void render()
 
 	int numVerts = 300;
 
-	static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
-	
-	static GLushort* indices = circle->getIndices();
-	static GLubyte* colors = circle->getColors();
-	static GLfloat* verts = circle->getVerts(); 
+	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
+	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f); 
+	static GLushort* indices = sphere->getIndices();
+	static GLubyte* colors = sphere->getColors();
+	static GLfloat* verts = sphere->getVerts(); 
 	
 	 
 	
@@ -215,8 +216,8 @@ void render()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDrawElements(GL_TRIANGLES, numVerts * 3, GL_UNSIGNED_SHORT, indices);
 
-	//glMatrixMode(GL_MODELVIEW);
-	//glRotatef(0.25f, 0.0f, 0.0f, 0.25f);
+	glMatrixMode(GL_MODELVIEW);
+	glRotatef(0.25f, 0.0f, 0.0f, 0.25f);
 
 }
 
