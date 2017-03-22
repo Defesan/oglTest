@@ -197,14 +197,16 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 void render()
 {
 
-	int numVerts = 300;
+	//int numVerts = 300;
 
 	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
-	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f); 
+	
+	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f, 4, 11); 
 	static GLushort* indices = sphere->getIndices();
 	static GLubyte* colors = sphere->getColors();
 	static GLfloat* verts = sphere->getVerts(); 
-	
+	static GLushort numLayers = sphere->getNumLayers();
+	static GLushort numSlices = sphere->getNumSlices();
 	 
 	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -214,11 +216,12 @@ void render()
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, verts);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, numVerts * 3, GL_UNSIGNED_SHORT, indices);
-
+	glDrawElements(GL_TRIANGLES, (2 * numSlices) + (2 * (numLayers - 1)), GL_UNSIGNED_SHORT, indices);
+	
 	glMatrixMode(GL_MODELVIEW);
-	glRotatef(0.25f, 0.0f, 0.0f, 0.25f);
+	glRotatef(0.01f, 0.01f, 0.01f, 0.01f);
 
+	
 }
 
 

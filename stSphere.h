@@ -26,6 +26,9 @@ public:
 	GLubyte* getColors() override {return this->colors;};
 	GLushort* getIndices() override {return this->indices;};
 	
+	GLushort getNumLayers() {return this->numLayers;};
+	GLushort getNumSlices() {return this->numSlices;};
+	
 	bool setColors(GLubyte** colors) override;
 
 

@@ -3,7 +3,6 @@
 Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVerts)
 {
 
-	
 	this->originX = originX;
 	this->originY = originY;
 	this->radius = radius;
@@ -120,6 +119,7 @@ void Circle::genVerts()
 	this->verts[0] = this->originX;
 	this->verts[1] = this->originY;
 	this->verts[2] = 0.0f;
+	
 	
 	for(int i = 1; i < this->numVerts; i++)
 	{
