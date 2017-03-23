@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <vector>
 
 #if defined(__IPHONEOS__) || defined(__ANDROID__)
 #define USING_OPENGLES
@@ -21,11 +22,14 @@ class Shape
 {
 	//These shapes are going to be defined in terms of vertices, triangles, and colors. So...each one has to have all three. Doesn't matter what it is.
 protected:
-	GLfloat* verts;
-	GLubyte* colors;
-	GLushort* indices;
+	//GLfloat* verts;
+	//GLubyte* colors;
+	//GLushort* indices;
 	
-	//This is going to be VERY simple at first.
+	//The c-style arrays were okay, but not good enough.
+	std::vector<GLfloat> verts;
+	std::vector<GLubyte> colors;
+	std::vector<GLushort> indices;
 		
 	//Generate the vertices of the object.
 	virtual void genVerts() = 0;

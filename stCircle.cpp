@@ -6,15 +6,19 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	this->originX = originX;
 	this->originY = originY;
 	this->radius = radius;
-	this->numVerts = numVerts + 1;
+	this->numSlices = numVerts;
 	
 	
-	this->verts = new GLfloat[3 * this->numVerts];
-	this->colors = new GLubyte[4 * this->numVerts];
+	//this->verts = new GLfloat[3 * this->numSlices];
+	//this->colors = new GLubyte[4 * this->numSlices];
 	
 	//How many indices? Well, there's one origin vertex, followed by n verts around the circle. That's n faces, and each one needs three indices.
 	
-	this->indices = new GLushort[3 * (this->numVerts - 1)];
+	//this->indices = new GLushort[3 * (this->numSlices - 1)];
+	
+	this->verts.reserve(3 * (this->numSlices + 1));
+	this->colors.reserve(4 * (this->numSlices + 1));
+	this->indices.reserve(3 * this->numSlices);
 
 	this->genVerts();
 	
@@ -35,7 +39,7 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	GLubyte blue = 0;
 	GLubyte alpha = 255;
 	
-	int delta = 765 / this->numVerts;
+	int delta = 765 / (this->numSlices + 1);
 	
 	if(!delta)
 	{
@@ -43,7 +47,7 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	
 	}
 	
-	for(int i = 0; i < this->numVerts; i++)
+	for(int i = 0; i < (this->numSlices + 1); i++)
 	{
 		int pos = i * 4;
 		this->colors[pos] = red;
@@ -106,22 +110,22 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 
 Circle::~Circle()
 {
-	delete[] this->verts;
-	delete[] this->colors;
-	delete[] this->indices;
+	//delete[] this->verts;
+	//delete[] this->colors;
+	//delete[] this->indices;
 
 }
 
 void Circle::genVerts()
 {
-	GLfloat sliceAngle = (2 * PI) / (GLfloat)(this->numVerts - 1); 
+	GLfloat sliceAngle = (2 * PI) / (GLfloat)this->numSlices; 
 
 	this->verts[0] = this->originX;
 	this->verts[1] = this->originY;
 	this->verts[2] = 0.0f;
 	
 	
-	for(int i = 1; i < this->numVerts; i++)
+	for(int i = 1; i < (this->numSlices + 1); i++)
 	{
 		GLfloat currentAngle = sliceAngle * (i - 1);
 		//So the very first vertex works, since that'll be 0.
@@ -134,7 +138,7 @@ void Circle::genVerts()
 void Circle::genIndices()
 {
 	
-	for(int i = 0; i < (this->numVerts - 2); i++)
+	for(int i = 0; i < (this->numSlices - 1); i++)
 	{
 		int startPos = i * 3;
 		this->indices[startPos] = 0;
@@ -142,10 +146,10 @@ void Circle::genIndices()
 		this->indices[startPos + 2] = i + 2;
 	}
 	
-	int lastVert = (this->numVerts - 2) * 3;
+	int lastVert = (this->numSlices - 1) * 3;
 	
 	this->indices[lastVert] = 0;
-	this->indices[lastVert + 1] = this->numVerts - 1;
+	this->indices[lastVert + 1] = this->numSlices;
 	this->indices[lastVert + 2] = 1;
 }
 

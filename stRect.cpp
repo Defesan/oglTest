@@ -3,10 +3,16 @@
 Rect::Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height)
 {
 	//We need four vertices.
-	this->verts = new GLfloat[12];
-	this->colors = new GLubyte[12];
+	//this->verts = new GLfloat[12];
+	//this->colors = new GLubyte[12];
+	//this->indices = new GLushort[6];
 	
-	this->indices = new GLushort[6];
+	//Let's just make sure there's no need for reallocation.
+	this->verts.reserve(12);
+	this->colors.reserve(16);
+	this->indices.reserve(6);
+	
+	
 	
 	this->originX = originX;
 	this->originY = originY;
@@ -29,10 +35,10 @@ Rect::Rect(GLfloat originX, GLfloat originY, GLfloat width, GLfloat height)
 
 Rect::~Rect()
 {
-	delete[] this->verts;
-	delete[] this->colors;
-	delete[] this->indices;
-
+	//delete[] this->verts;
+	//delete[] this->colors;
+	//delete[] this->indices;
+	//Vector handles all of this! Yay!
 }
 
 void Rect::genVerts()

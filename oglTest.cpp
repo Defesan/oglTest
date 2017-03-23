@@ -202,21 +202,19 @@ void render()
 	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
 	
 	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f, 4, 11); 
-	static GLushort* indices = sphere->getIndices();
-	static GLubyte* colors = sphere->getColors();
-	static GLfloat* verts = sphere->getVerts(); 
-	static GLushort numLayers = sphere->getNumLayers();
-	static GLushort numSlices = sphere->getNumSlices();
-	 
+	//static GLushort* indices = sphere->getIndices();
+	//static GLubyte* colors = sphere->getColors();
+	//static GLfloat* verts = sphere->getVerts(); 
+	static int size = sphere->getIndicesSize(); 
 	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glColorPointer(4, GL_UNSIGNED_BYTE, 0, colors);
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, sphere->getColors());
 	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, verts);
+	glVertexPointer(3, GL_FLOAT, 0, sphere->getVerts());
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, (2 * numSlices) + (2 * (numLayers - 1)), GL_UNSIGNED_SHORT, indices);
+	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_SHORT, sphere->getIndices());
 	
 	glMatrixMode(GL_MODELVIEW);
 	glRotatef(0.01f, 0.01f, 0.01f, 0.01f);

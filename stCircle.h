@@ -11,16 +11,16 @@ private:
 	GLfloat originX;
 	GLfloat originY;
 	GLfloat radius;
-	GLushort numVerts;
+	GLushort numSlices;
 public:
 	
 	Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVerts);
 	Circle(GLfloat originX, GLfloat originY, GLfloat radius) : Circle(originX, originY, radius, 12) {};
 	~Circle() override;
 	
-	GLfloat* getVerts() override {return this->verts;};
-	GLubyte* getColors() override {return this->colors;};
-	GLushort* getIndices() override {return this->indices;};
+	GLfloat* getVerts() override {return this->verts.data();};
+	GLubyte* getColors() override {return this->colors.data();};
+	GLushort* getIndices() override {return this->indices.data();};
 	
 	void genVerts() override;
 	void genIndices() override;

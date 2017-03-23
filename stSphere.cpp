@@ -10,10 +10,10 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	this->numSlices = numSlices;
 	
 	int numVerts = (numLayers * numSlices) + 2;
-	int vertArraySize = numVerts * 3;
+	//int vertArraySize = numVerts * 3;
 	//std::cout << "Vert Array Size: " << vertArraySize << std::endl;
-	this->verts = new GLfloat[vertArraySize];
-	this->colors = new GLubyte[numVerts * 4];
+	//this->verts = new GLfloat[vertArraySize];
+	//this->colors = new GLubyte[numVerts * 4];
 	
 	//Once again, we ask:how many triangles?
 	//There will be a triangle for every slice on the top and bottom, and two between each layer.
@@ -21,7 +21,7 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	//There is one quad for every slice BETWEEN each adjacent pair of layers, which means two faces. We'll cross the 'how to index that' bridge when we come to it.
 	//But if there are M layers, there are 2 * (M - 1) triangles.
 	
-	this->indices = new GLushort[(2 * numSlices) + (2 * (numLayers - 1))];
+	//this->indices = new GLushort[(2 * numSlices) + (2 * (numLayers - 1))];
 	
 	this->genVerts();
 	//std::cout << "Generated vertices." << std::endl;
@@ -52,9 +52,9 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 
 Sphere::~Sphere()
 {
-	delete[] this->verts;
-	delete[] this->colors;
-	delete[] this->indices;
+	//delete[] this->verts;
+	//delete[] this->colors;
+	//delete[] this->indices;
 
 }
 
