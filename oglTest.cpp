@@ -196,12 +196,11 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 
 void render()
 {
-
 	//int numVerts = 300;
 
 	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
 	
-	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f, 4, 11); 
+	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f, 11, 24); 
 	//static GLushort* indices = sphere->getIndices();
 	//static GLubyte* colors = sphere->getColors();
 	//static GLfloat* verts = sphere->getVerts(); 

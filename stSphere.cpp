@@ -10,8 +10,8 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	this->numSlices = numSlices;
 	
 	int numVerts = (numLayers * numSlices) + 2;
-	//int vertArraySize = numVerts * 3;
-	//std::cout << "Vert Array Size: " << vertArraySize << std::endl;
+	int vertArraySize = numVerts * 3;
+	std::cout << "Vert Array Size: " << vertArraySize << std::endl;
 	//this->verts = new GLfloat[vertArraySize];
 	//this->colors = new GLubyte[numVerts * 4];
 	
@@ -24,7 +24,7 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	//this->indices = new GLushort[(2 * numSlices) + (2 * (numLayers - 1))];
 	
 	this->genVerts();
-	//std::cout << "Generated vertices." << std::endl;
+	std::cout << "Generated vertices." << std::endl;
 	
 	this->genIndices();
 	
@@ -35,16 +35,20 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	
 	for(int i = 0; i < numVerts; i++)
 	{
+		this->colors.push_back(red);
+		this->colors.push_back(green);
+		this->colors.push_back(blue);
+		this->colors.push_back(alpha);
 		//For every vertex in the color array, let's just increment all of the values by one, and eat the overflow if it happens.
-		int startPos = 4 * i;
-		this->colors[startPos] = red;
-		this->colors[startPos + 1] = green;
-		this->colors[startPos + 2] = blue;
-		this->colors[startPos + 3] = alpha;
+		//int startPos = 4 * i;
+		//this->colors[startPos] = red;
+		//this->colors[startPos + 1] = green;
+		//this->colors[startPos + 2] = blue;
+		//this->colors[startPos + 3] = alpha;
 		
-		red += 20;
-		green += 20;
-		blue += 20;
+		red += 5;
+		green += 5;
+		blue += 5;
 		
 	}
 	
@@ -66,9 +70,13 @@ void Sphere::genVerts()
 	GLfloat currentYPos = this->originY + this->radius;
 	int vertIndex = 0;
 	int startPos = 0;
-	this->verts[startPos] = this->originX;
-	this->verts[startPos + 1] = currentYPos;
-	this->verts[startPos + 2] = this->originZ;
+	this->verts.push_back(this->originX);
+	this->verts.push_back(currentYPos);
+	this->verts.push_back(this->originZ);
+	
+	//this->verts[startPos] = this->originX;
+	//this->verts[startPos + 1] = currentYPos;
+	//this->verts[startPos + 2] = this->originZ;
 	
 	std::cout << vertIndex << ": " << this->verts[startPos] << "X, " << this->verts[startPos + 1] << "Y, " << this->verts[startPos + 2] << "Z, " << std::endl;
 	vertIndex++;
@@ -79,22 +87,48 @@ void Sphere::genVerts()
 	GLfloat layerAngle = PI/(this->numLayers + 1);
 	GLfloat sliceAngle = (2 * PI)/this->numSlices;
 	
-	
+	std::cout << "Layer angle: " << layerAngle << std::endl;
+	std::cout << "Slice angle: " << sliceAngle << std::endl;
 	
 	
 	for(int i = 0; i < this->numLayers; i++)
 	{
+		std::cout << "Generating layer " << i << std::endl;
+		
 		GLfloat currentSliceAngle;
 		GLfloat currentLayerAngle = layerAngle * (i + 1);
+		
+		std::cout << "Layer " << i << " angle: " << currentLayerAngle << std::endl;
+		
 		GLfloat layerRadius = this->originX + (sin(currentLayerAngle) * this->radius);
 		currentYPos = this->originY + (cos(currentLayerAngle) * this->radius);	//This will be the same for all the generated vertices in this layer.
+		
+		std::cout << "Current layer radius: " << layerRadius << "\n" << "Current Layer Y level: " << currentYPos << std::endl;
+		
 		for(int j = 0; j < this->numSlices; j++)
 		{
 			startPos = vertIndex * 3;
 			currentSliceAngle = j * sliceAngle;
-			this->verts[startPos] = this->originX + (sin(currentSliceAngle) * layerRadius);//x position
-			this->verts[startPos + 1] = currentYPos;
-			this->verts[startPos + 2] = this->originZ + (cos(currentSliceAngle) * layerRadius); //z position
+			GLfloat currentXPos = this->originX + (sin(currentSliceAngle) * layerRadius);
+			GLfloat currentZPos = this->originX + (cos(currentSliceAngle) * layerRadius);
+			/*
+			if(abs(currentXPos) < 0.001f)
+			{
+				//Snap.
+				currentXPos = 0.0f;
+			}
+			if(abs(currentYPos) < 0.001f)
+			{
+				currentYPos = 0.0f;			
+			}
+			if(abs(currentZPos) < 0.001f)
+			{
+				currentZPos = 0.0f;			
+			}
+			*/
+			this->verts.push_back(currentXPos);//x position
+			this->verts.push_back(currentYPos);
+			this->verts.push_back(currentZPos); //z position
 			std::cout << vertIndex << ": " << this->verts[startPos] << "X, " << this->verts[startPos + 1] << "Y, " << this->verts[startPos + 2] << "Z, " << std::endl;
 			vertIndex++;	
 		}
@@ -111,9 +145,9 @@ void Sphere::genVerts()
 	
 	startPos = vertIndex * 3;
 	currentYPos = this->originY - this->radius;
-	this->verts[startPos] = this->originX;
-	this->verts[startPos + 1] = currentYPos;
-	this->verts[startPos + 2] = this->originZ;
+	this->verts.push_back(this->originX);
+	this->verts.push_back(currentYPos);
+	this->verts.push_back(this->originZ);
 	std::cout << vertIndex << ": " << this->verts[startPos] << "X, " << this->verts[startPos + 1] << "Y, " << this->verts[startPos + 2] << "Z, " << std::endl;
 	//And that's the last vertex. Now we just have to make them make SENSE.
 
@@ -132,15 +166,15 @@ void Sphere::genIndices()
 	std::cout << "Generating upper cap." << std::endl;
 	for(int i = 0; i < this->numSlices; i++)
 	{
-		this->indices[startPos] = 0;	//All of these tris start at the center point.
-		this->indices[startPos + 1] = i + 1;
+		this->indices.push_back(0);	//All of these tris start at the center point.
+		this->indices.push_back(i + 1);
 		if(i != (this->numSlices - 1))
 		{
-			this->indices[startPos + 2] = i + 2;
+			this->indices.push_back(i + 2);
 		}
 		else
 		{
-			this->indices[startPos + 2] = 1;
+			this->indices.push_back(1);
 		}
 		std::cout << this->indices[startPos] << " " << this->indices[startPos + 1] << " " << this->indices[startPos + 2] << std::endl;
 		startPos += 3;
@@ -165,21 +199,23 @@ void Sphere::genIndices()
 		for(int j = 0; j < this->numSlices; j++)
 		{
 			//There are a few safe assumptions, regardless of index, but they're out of order.
-			this->indices[startPos] = firstVert + j;
-			this->indices[startPos + 1] = belowFirst + j;
-			this->indices[startPos + 3] = firstVert + j;
+			this->indices.push_back(firstVert + j);
+			this->indices.push_back(belowFirst + j);
+			
 			
 			if(j != (this->numSlices - 1))
 			{
-				this->indices[startPos + 2] = belowFirst + (j + 1);
-				this->indices[startPos + 4] = firstVert + (j + 1);
-				this->indices[startPos + 5] = belowFirst + (j + 1);
+				this->indices.push_back(belowFirst + (j + 1));
+				this->indices.push_back(firstVert + j);
+				this->indices.push_back(firstVert + (j + 1));
+				this->indices.push_back(belowFirst + (j + 1));
 			}
 			else
 			{
-				this->indices[startPos + 2] = belowFirst;
-				this->indices[startPos + 4] = firstVert;
-				this->indices[startPos + 5] = belowFirst;
+				this->indices.push_back(belowFirst);
+				this->indices.push_back(firstVert + j);
+				this->indices.push_back(firstVert);
+				this->indices.push_back(belowFirst);
 			}
 			std::cout << this->indices[startPos] << " " << this->indices[startPos + 1] << " " << this->indices[startPos + 2] << std::endl;
 			std::cout << this->indices[startPos + 3] << " " << this->indices[startPos + 4] << " " << this->indices[startPos + 5] << std::endl;
@@ -199,15 +235,15 @@ void Sphere::genIndices()
 	std::cout << "Generating bottom cap." << std::endl;
 	for(int i = 0; i < this->numSlices; i++)
 	{
-		this->indices[startPos] = lastVert;	//All of these tris start at the center point.
-		this->indices[startPos + 1] = i + startOfLastRing;
+		this->indices.push_back(lastVert);	//All of these tris start at the center point.
+		this->indices.push_back(i + startOfLastRing);
 		if(i != (this->numSlices - 1))
 		{
-			this->indices[startPos + 2] = i + (startOfLastRing + 1);
+			this->indices.push_back(i + (startOfLastRing + 1));
 		}
 		else
 		{
-			this->indices[startPos + 2] = startOfLastRing;
+			this->indices.push_back(startOfLastRing);
 		}
 		std::cout << this->indices[startPos] << " " << this->indices[startPos + 1] << " " << this->indices[startPos + 2] << std::endl;
 		startPos += 3;
