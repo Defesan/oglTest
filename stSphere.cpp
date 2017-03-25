@@ -32,7 +32,7 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 		blue += 5;
 		
 	}
-	
+	glTranslatef(this->originX, this->originY, this->originZ);
 }
 
 Sphere::~Sphere()
@@ -44,9 +44,9 @@ Sphere::~Sphere()
 void Sphere::genVerts()
 {
 	//Sphere construction begins at the top.
-	GLfloat vertexYPos = this->originY + this->radius;
-	GLfloat vertexXPos = this->originX;
-	GLfloat vertexZPos = this->originZ;
+	GLfloat vertexYPos = this->radius;//this->originY + this->radius;
+	GLfloat vertexXPos = 0.0f;//this->originX;
+	GLfloat vertexZPos = 0.0f;//this->originZ;
 	
 	GLfloat layerAngle = PI/(this->numLayers + 1);  //The angle, in radians, between each layer of the sphere
 	GLfloat sliceAngle = (2 * PI)/this->numSlices;  //The angle, in radians, between each meridian of the sphere.
@@ -68,7 +68,7 @@ void Sphere::genVerts()
 		
 		//Define the dimensions and position of the current layer
 		layerRadius = sin(currentLayerAngle) * this->radius;
-		vertexYPos = this->originY + (cos(currentLayerAngle) * this->radius);
+		vertexYPos = cos(currentLayerAngle) * this->radius;
 		
 		//Generate vertex j of layer i
 		for(int j = 0; j < this->numSlices; j++)
@@ -77,8 +77,8 @@ void Sphere::genVerts()
 			currentSliceAngle = j * sliceAngle;
 			
 			//Determine the coordinates of the current vertex
-			vertexXPos = this->originX + (sin(currentSliceAngle) * layerRadius);
-			vertexZPos = this->originZ + (cos(currentSliceAngle) * layerRadius);
+			vertexXPos = sin(currentSliceAngle) * layerRadius;
+			vertexZPos = cos(currentSliceAngle) * layerRadius;
 
 			//Place vertex j of layer i
 			this->verts.push_back(vertexXPos);
@@ -88,9 +88,9 @@ void Sphere::genVerts()
 	}
 	
 	//Bottom vertex coordinates
-	vertexYPos = this->originY - this->radius;
-	vertexXPos = this->originX;
-	vertexZPos = this->originZ;
+	vertexYPos = -1 * this->radius;
+	vertexXPos = 0.0f;
+	vertexZPos = 0.0f;
 	
 	this->verts.push_back(vertexXPos);
 	this->verts.push_back(vertexYPos);
@@ -204,9 +204,11 @@ bool Sphere::setColors(GLubyte** colors)
 
 void Sphere::render()
 {
+
 	glColorPointer(4, GL_UNSIGNED_BYTE, 0, this->colors.data());
 	glEnableClientState(GL_COLOR_ARRAY);
 	glVertexPointer(3, GL_FLOAT, 0, this->verts.data());
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_SHORT, this->indices.data());
+
 }

@@ -196,31 +196,17 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 
 void render()
 {
-	//int numVerts = 300;
-
-	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
+	static Sphere* sphere = new Sphere(1.0f, 0.0f, -1.0f, 0.5f, 12, 24); 
+	//static Sphere* sphere2 = new Sphere(-1.0f, 0.0f, 1.0f, 0.5f, 6, 24);
 	
-	static Sphere* sphere = new Sphere(1.0f, 0.0f, -1.0f, 0.5f, 6, 24); 
-	//static Sphere* sphere2 = new Sphere(2.0f, 2.0f, -3.0f, 0.5f, 6, 24);
-	//static GLushort* indices = sphere->getIndices();
-	//static GLubyte* colors = sphere->getColors();
-	//static GLfloat* verts = sphere->getVerts(); 
-	//static int size = sphere->getIndicesSize(); 
-	
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	//glColorPointer(4, GL_UNSIGNED_BYTE, 0, sphere->getColors());
-	//glEnableClientState(GL_COLOR_ARRAY);
-	//glVertexPointer(3, GL_FLOAT, 0, sphere->getVerts());
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_SHORT, sphere->getIndices());
 	
 	sphere->render();
 	//sphere2->render();
-	
 	glMatrixMode(GL_MODELVIEW);
-	glRotatef(0.01f, 0.01f, 0.01f, 0.01f);
+	glRotatef(0.01f, 0.0f, 0.01f, 0.0f);
 
 	
 }
