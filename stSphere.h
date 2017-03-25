@@ -32,6 +32,7 @@ public:
 	int getIndicesSize() {return this->indices.size();};
 	
 	bool setColors(GLubyte** colors) override;
+	void render();
 
 
 };

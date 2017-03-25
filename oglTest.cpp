@@ -52,8 +52,8 @@ int main(int argc, char* argv[])
 		state->window_w = mode.w;
 		state->window_h = mode.h;
 		#else
-		state->window_w = 480;
-		state->window_h = 640;
+		state->window_w = 640;
+		state->window_h = 480;
 		#endif
 		
 		debug << state->window_w << std::endl << state->window_h << std::endl << std::endl;
@@ -67,9 +67,9 @@ int main(int argc, char* argv[])
 		glLoadIdentity();
 		
 		#ifdef USING_OPENGLES
-		glOrthof(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
+		glOrthof(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -10.0f, 10.0f);
 		#else
-		glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -2.0f, 2.0f);
+		glOrtho(-2.0f, 2.0f, -1 * aspectMod, aspectMod, -10.0f, 10.0f);
 		#endif
 		
 		glMatrixMode(GL_MODELVIEW);
@@ -200,20 +200,24 @@ void render()
 
 	//static Circle* circle = new Circle(0.0f, 0.0f, 1.0f, numVerts);	
 	
-	static Sphere* sphere = new Sphere(0.0f, 0.0f, 0.0f, 1.0f, 11, 24); 
+	static Sphere* sphere = new Sphere(1.0f, 0.0f, -1.0f, 0.5f, 6, 24); 
+	//static Sphere* sphere2 = new Sphere(2.0f, 2.0f, -3.0f, 0.5f, 6, 24);
 	//static GLushort* indices = sphere->getIndices();
 	//static GLubyte* colors = sphere->getColors();
 	//static GLfloat* verts = sphere->getVerts(); 
-	static int size = sphere->getIndicesSize(); 
+	//static int size = sphere->getIndicesSize(); 
 	
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glColorPointer(4, GL_UNSIGNED_BYTE, 0, sphere->getColors());
-	glEnableClientState(GL_COLOR_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, sphere->getVerts());
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_SHORT, sphere->getIndices());
+	//glColorPointer(4, GL_UNSIGNED_BYTE, 0, sphere->getColors());
+	//glEnableClientState(GL_COLOR_ARRAY);
+	//glVertexPointer(3, GL_FLOAT, 0, sphere->getVerts());
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_SHORT, sphere->getIndices());
+	
+	sphere->render();
+	//sphere2->render();
 	
 	glMatrixMode(GL_MODELVIEW);
 	glRotatef(0.01f, 0.01f, 0.01f, 0.01f);
