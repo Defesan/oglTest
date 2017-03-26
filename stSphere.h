@@ -12,6 +12,10 @@ private:
 	GLfloat originZ;
 	GLfloat radius;
 	
+	GLfloat rotAngleX;
+	GLfloat rotAngleY;
+	GLfloat rotAngleZ;
+	
 	GLushort numLayers;
 	GLushort numSlices;
 	

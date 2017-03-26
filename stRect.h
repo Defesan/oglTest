@@ -22,6 +22,8 @@ public:
 	void genVerts() override;
 	void genIndices() override;
 	bool setColors(GLubyte** colors) override;
+	void setColorToGLColor();
+	void render();
 };
 
 

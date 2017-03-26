@@ -9,6 +9,10 @@ Sphere::Sphere(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat radius
 	this->numLayers = numLayers;
 	this->numSlices = numSlices;
 	
+	this->rotAngleX = 0.0f;
+	this->rotAngleY = 0.0f;
+	this->rotAngleZ = 0.0f;
+	
 	int numVerts = (numLayers * numSlices) + 2;
 	
 	this->genVerts();
@@ -210,5 +214,8 @@ void Sphere::render()
 	glVertexPointer(3, GL_FLOAT, 0, this->verts.data());
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_SHORT, this->indices.data());
+	
+	glRotatef(rotAngleX, 0.01f, 0.0f, 0.0f);
+	rotAngleX += 0.01f;
 
 }

@@ -52,15 +52,11 @@ int main(int argc, char* argv[])
 		state->window_w = mode.w;
 		state->window_h = mode.h;
 		#else
-		state->window_w = 640;
-		state->window_h = 480;
+		//state->window_w = 640;
+		//state->window_h = 480;
 		#endif
 		
-		debug << state->window_w << std::endl << state->window_h << std::endl << std::endl;
-		
 		float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
-		
-		debug << "aspectMod: " << aspectMod << std::endl << std::endl;
 		
 		glViewport(0,0,state->window_w, state->window_h);
 		glMatrixMode(GL_PROJECTION);
@@ -172,6 +168,11 @@ bool init(SDL_GLContext** context, SDLTest_CommonState** state, int argc, char* 
 	
 	*state = tState;
 	*context = tContext;
+	
+	//Set up openGL
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	
 	return true;
 }
 
@@ -196,19 +197,14 @@ void shutdown(SDL_GLContext* context, SDLTest_CommonState* state, int val)
 
 void render()
 {
-	static Sphere* sphere = new Sphere(1.0f, 0.0f, -1.0f, 0.5f, 12, 24); 
-	//static Sphere* sphere2 = new Sphere(-1.0f, 0.0f, 1.0f, 0.5f, 6, 24);
-	
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	Rect* rect = new Rect(0.0f,0.0f,1.0f);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	rect->setColorToGLColor();
+	rect->render();
 	
-	sphere->render();
-	//sphere2->render();
-	glMatrixMode(GL_MODELVIEW);
-	glRotatef(0.01f, 0.0f, 0.01f, 0.0f);
-
-	
+	glFlush();
 }
 
 
@@ -237,6 +233,8 @@ int handleEvents(SDL_Event event, SDLTest_CommonState* state, SDL_GLContext* con
 								break;
 							}
 							glViewport(0,0,event.window.data1, event.window.data2);
+							//state->window_h = event.window.data1;
+							//state->window_w = event.window.data2;
 							float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
 							glMatrixMode(GL_PROJECTION);
 							glLoadIdentity();
