@@ -52,9 +52,16 @@ int main(int argc, char* argv[])
 		state->window_w = mode.w;
 		state->window_h = mode.h;
 		#else
-		//state->window_w = 640;
-		//state->window_h = 480;
+		//state->window_w = 1280;
+		//state->window_h = 960;
 		#endif
+		//SDL_SetWindowSize(state->windows[0], state->window_w, state->window_h);
+		/*
+			Alright, I'm not doing this right.
+			The actual size of the generated window is stuck at 640 x 480, the default.
+			Now, when I CHANGE that, I'm obviously changing something.
+			Unfortunately, it's not the RIGHT something.
+		*/
 		
 		float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
 		
@@ -199,10 +206,8 @@ void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	Rect* rect = new Rect(0.0f,0.0f,1.0f);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	rect->setColorToGLColor();
-	rect->render();
+	Circle* circle = new Circle(0.0f, 0.0f, 1.0f, 36);
+	circle->render();
 	
 	glFlush();
 }
@@ -233,8 +238,10 @@ int handleEvents(SDL_Event event, SDLTest_CommonState* state, SDL_GLContext* con
 								break;
 							}
 							glViewport(0,0,event.window.data1, event.window.data2);
-							//state->window_h = event.window.data1;
-							//state->window_w = event.window.data2;
+
+							state->window_h = event.window.data2;
+							state->window_w = event.window.data1;
+
 							float aspectMod = 2.0f * ((float)state->window_h / (float)state->window_w);
 							glMatrixMode(GL_PROJECTION);
 							glLoadIdentity();

@@ -8,14 +8,6 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	this->radius = radius;
 	this->numSlices = numVerts;
 	
-	
-	//this->verts = new GLfloat[3 * this->numSlices];
-	//this->colors = new GLubyte[4 * this->numSlices];
-	
-	//How many indices? Well, there's one origin vertex, followed by n verts around the circle. That's n faces, and each one needs three indices.
-	
-	//this->indices = new GLushort[3 * (this->numSlices - 1)];
-	
 	this->verts.reserve(3 * (this->numSlices + 1));
 	this->colors.reserve(4 * (this->numSlices + 1));
 	this->indices.reserve(3 * this->numSlices);
@@ -23,16 +15,7 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	this->genVerts();
 	
 	this->genIndices();
-	
-	//Basic colors.
-	//Okay, so this time, I'm going to iterate through EVERY VERTEX. The first vertex, of course, is going to be black(as the center).
-	//After that, though, I want three variables. One for red, one for green, and one for blue.
-	//THe red one should increase to 255 over the course of the first third of the circle, and stay that way.
-	//(this isn't a color wheel, btw, except in that it is a wheel with colors on it.)
-	//With red at 255, the overflow goes into green until it reaches 255.
-	//Then the overflow goes into blue until IT reaches 255.
-	//So the total I need to reach over numVertices is 765.
-	//And the alpha channel for good measure.
+
 	
 	GLubyte red = 0;
 	GLubyte green = 0;
@@ -49,15 +32,12 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 	
 	for(int i = 0; i < (this->numSlices + 1); i++)
 	{
-		int pos = i * 4;
-		this->colors[pos] = red;
-		pos++;
-		this->colors[pos] = green;
-		pos++;
-		this->colors[pos] = blue;
-		pos++;
-		this->colors[pos] = alpha;
+		this->colors.push_back(red);
+		this->colors.push_back(green);
+		this->colors.push_back(blue);
+		this->colors.push_back(alpha);
 		
+		//Generate the colors for the next vertex.
 		//If red hasn't been maxed out...
 		if(red < 255)
 		{
@@ -105,14 +85,10 @@ Circle::Circle(GLfloat originX, GLfloat originY, GLfloat radius, GLushort numVer
 		}
 	}
 
-	//Okay, I think THAT should work.
 }
 
 Circle::~Circle()
 {
-	//delete[] this->verts;
-	//delete[] this->colors;
-	//delete[] this->indices;
 
 }
 
@@ -120,18 +96,18 @@ void Circle::genVerts()
 {
 	GLfloat sliceAngle = (2 * PI) / (GLfloat)this->numSlices; 
 
-	this->verts[0] = this->originX;
-	this->verts[1] = this->originY;
-	this->verts[2] = 0.0f;
+	this->verts.push_back(this->originX);
+	this->verts.push_back(this->originY);
+	this->verts.push_back(0.0f);
 	
 	
 	for(int i = 1; i < (this->numSlices + 1); i++)
 	{
 		GLfloat currentAngle = sliceAngle * (i - 1);
-		//So the very first vertex works, since that'll be 0.
-		this->verts[i * 3] = this->originX + sin(currentAngle) * this->radius;
-		this->verts[(i * 3) + 1] = this->originY + cos(currentAngle) * this->radius;
-		this->verts[(i * 3) + 2] = 0.0f;
+		
+		this->verts.push_back(this->originX + sin(currentAngle) * this->radius);
+		this->verts.push_back(this->originY + cos(currentAngle) * this->radius);
+		this->verts.push_back(0.0f);
 	}
 }
 
@@ -140,33 +116,27 @@ void Circle::genIndices()
 	
 	for(int i = 0; i < (this->numSlices - 1); i++)
 	{
-		int startPos = i * 3;
-		this->indices[startPos] = 0;
-		this->indices[startPos + 1] = i + 1;
-		this->indices[startPos + 2] = i + 2;
+		this->indices.push_back(0);
+		this->indices.push_back(i + 1);
+		this->indices.push_back(i + 2);
 	}
 	
-	int lastVert = (this->numSlices - 1) * 3;
-	
-	this->indices[lastVert] = 0;
-	this->indices[lastVert + 1] = this->numSlices;
-	this->indices[lastVert + 2] = 1;
+	this->indices.push_back(0);
+	this->indices.push_back(this->numSlices);
+	this->indices.push_back(1);
 }
 
 bool Circle::setColors(GLubyte** colors)
 {
-	if(colors)
-	{
-		//Yes, I know. Not good code. I need to pull in both the number of vertices and the size of the color array, but for now...
-		//BTW, doesn't work. Not for this, at least.
-		for(int i = 0; i < 4; i++)
-		{
-			for(int j = 0; j < 4; j++)
-			{
-				this->colors[(i * 4) + j] = colors[i][j];
-			}
-		}
-		return true;
-	}
 	return false;
+}
+
+void Circle::render()
+{
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, this->colors.data());
+	glEnableClientState(GL_COLOR_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, this->verts.data());
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_SHORT, this->indices.data());
+
 }
